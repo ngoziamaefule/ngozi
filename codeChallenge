@@ -1,0 +1,125 @@
+#!/bin/python3
+
+#
+# Complete the 'delivery_summary' function below.
+#
+
+def delivery_summary(deliveries_ordered, rush_deliveries, meals_purchased):
+    """
+    Parameters:
+      deliveries_ordered: How many deliveries each customer ordered.
+      rush_deliveries: How many deliveries each customer rushed.
+      meals_purchased: How many total meals the customer purchased.
+    """
+
+    print("Welcome to the Ada Meal Delivery Dashboard")
+    print()
+
+    # Write your code here    
+    """
+    Essentially  I was responsible for writing code that would calculate the total cost of each customer's order. 
+    Orders consisted of regular deliveries, rush deliveries, and meals. Each of these items is a parameter of the delivery_summary function, so the first
+    thing I wanted to do was create a list that assigned an ID to each customer.
+    """    
+
+    # Each parameter has it's own list/dict, each index corresponds to a customer
+    # Example: [0] is the same person in each parameter
+    
+    """
+    Here, I created an empty list for the customer IDs. The for loop is here to count the number of times deliveries were ordered (as that would correspond with
+    the number of customers) and append the empty list. I could have used the other parameters for this count since the indices corresponds with them as well.
+    Since for loops start at 0, I add 1 to each iteration because I want the first customer's ID to be 1.
+    """
+    
+    my_customers = []
+    for i in range(len(deliveries_ordered)):
+        cust = i+1
+        my_customers.append(cust)
+    
+    """
+    Now that there is a list of customer IDs, I wanted to calculate the total amount for regular deliveries, or deliveries_ordered for each customer.
+    I started with an empty list for the delivery_totals that correspond with the customer IDs. In the prompt they provided, the following was explained: 
+    Every order is $7.25. However, for every 10 orders, customers received a discount and paid $60. 
+    I then appended the deliveries_totals list with each customer's total cost for deliveries_ordered.
+    """
+    deliveries_total = []
+    for i in range(len(deliveries_ordered)):
+        # is deliveries_ordered[i] order = 10
+        if deliveries_ordered[i] == 10:
+            deliveries_total.append(60)
+        elif deliveries_ordered[i] > 10:
+            deliveries_total.append(((deliveries_ordered[i] % 10) * 7.25) + (deliveries_ordered[i]//10 * 60))
+        else:
+            deliveries_total.append(deliveries_ordered[i] * 7.25) 
+    """
+    In the prompt for the challenge, it was explained that rush deliveries were $2.00 and meals purchased were $12.50. Again, I started with 
+    an empty list for rush delivery fees and fees for meals delievered that correspond with the customer IDs.
+    """
+    
+    rush_total = []
+    for i in range(len(rush_deliveries)):
+        rush_total.append(rush_deliveries[i] * 2.00)
+    
+    # A list of meal fees that correspond with the customer ids
+    meals_total = []
+    for i in range(len(meals_purchased)):
+        meals_total.append(meals_purchased[i] * 12.50)
+    
+    """
+    Since the indices of all the lists correspond with the customers list, I can use each customer's respective ID or index to calculate their overall costs
+    cost of the deliveries.
+    """
+    
+    cust_total = []
+    delivery_fees = []
+    
+    for i in range(len(deliveries_ordered)):
+        cust_total.append(deliveries_total[i] + rush_total[i] + meals_total[i])
+        delivery_fees.append(deliveries_total[i] + rush_total[i])
+        print(f"Customer {my_customers[i]} paid ${cust_total[i]:.2f} total\n>>> ${deliveries_total[i]:.2f} in delivery fees\n>>> ${rush_total[i]:.2f} in rush delivery fees\n>>> ${meals_total[i]:.2f} in meal fees\n")
+    
+    total_earnings = 0
+    for total in cust_total:
+        total_earnings += total
+    print(f"Combined all customers paid ${total_earnings:.2f} total")
+    
+    total_delivery = 0
+    for total in delivery_fees:
+        total_delivery += total
+    print(f"Delivery fees (standard and Rush Delivery) were ${total_delivery:.2f} total\n")
+    max_spend = max(cust_total)
+    max_spend_index = cust_total.index(max_spend) + 1
+    
+    print(f"${max_spend:.2f} was the most paid by any single customer\nThe customer(s) that paid the most were: #{max_spend_index}")
+    
+if __name__ == '__main__':    
+    deliveries_ordered = []
+    rush_deliveries = []
+    meals_purchased = []
+    
+    header = input().strip()
+
+    while header == "deliveries_ordered:":
+        line = input().strip()
+        try:
+            deliveries_ordered.append(int(line))
+        except ValueError:
+            header = line
+
+    while header == "rush_deliveries:":
+        line = input().strip()
+        try:
+            rush_deliveries.append(int(line))
+        except ValueError:
+            header = line
+
+    while header == "meals_purchased:":
+        try:
+            line = input().strip()
+
+            meals_purchased.append(int(line))
+        except EOFError:
+            header = None
+            
+    delivery_summary(deliveries_ordered, rush_deliveries, meals_purchased)
+
